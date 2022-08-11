@@ -1,7 +1,8 @@
+import sys
 variable_namespace = {}
 j = 0
 counter = 0
-with open("file.txt", "r") as f:
+with open(sys.argv[1], "r") as f:
     file_text = [row.strip() for row in f.readlines()]
 
     for i in range(len(file_text)):
@@ -10,7 +11,7 @@ with open("file.txt", "r") as f:
 
         elif "{" in file_text[i]:
             counter -= 1
-            
+
     if counter != 0:
         raise SyntaxError('Bro! number of "{" and "}" must be equal:')
 
@@ -58,7 +59,7 @@ with open("file.txt", "r") as f:
                             variable_namespace[splitted_row[1]] = splitted_row[3]
 
                         if "print" in file_text[ind]:
-                            splitted_row = list(''.join(list(file_text[ind])[6:-1]))
+                            splitted_row = (file_text[ind].split("print("))[1].split(")")[0].split(" ")
                             for i in range(len(splitted_row)):       
                                 if splitted_row[i] in variable_namespace:
                                     splitted_row[i] = variable_namespace[splitted_row[i]]     
