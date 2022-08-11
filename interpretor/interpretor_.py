@@ -24,11 +24,11 @@ with open("file.txt", "r") as f:
                 variable_namespace[splitted_row[1]] = splitted_row[-1]
     
             if "print" in file_text[j] and j <= len(file_text):
-                splitted_row = list(''.join(list(file_text[j])[6:-1]))
+                splitted_row = (file_text[j].split("print("))[1].split(")")[0].split(" ")
                 for i in range(len(splitted_row)):        
                     if splitted_row[i] in variable_namespace:
                         splitted_row[i] = variable_namespace[splitted_row[i]]     
-                print(eval(''.join(splitted_row)))
+                print(eval(' '.join(splitted_row)))
             j += 1
     untill_if(j)         
     index = 0
