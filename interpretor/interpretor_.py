@@ -13,7 +13,7 @@ with open("file.txt", "r") as f:
         raise SyntaxError('Bro! number of "{" and "}" must be equal:')
 
     def untill_if(idx):
-        """This function do file line by line untill will reach line that starts with 'if'"""
+        """This function do file line by line untill will reach a line that starts with 'if'"""
         j = idx
         while j != len(file_text):
             if "if" in file_text[j]:
@@ -33,6 +33,8 @@ with open("file.txt", "r") as f:
     untill_if(j)         
     index = 0
     def have_if():
+        """This function do file line by line when reach a line that starts 'if'
+         and will do untill will reach line that ends with '}':}'"""
         ind = 0
         while ind != len(file_text):
             if "if" in file_text[ind]:
@@ -73,4 +75,4 @@ with open("file.txt", "r") as f:
     have_if()
 
     if len(variable_namespace) != 0:
-        print(variable_namespace)                                         
+        print(variable_namespace)                                             
