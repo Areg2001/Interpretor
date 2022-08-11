@@ -1,14 +1,16 @@
+variable_namespace = {}
+j = 0
+counter = 0
 with open("file.txt", "r") as f:
-    variable_namespace = {}
     file_text = [row.strip() for row in f.readlines()]
-    j = 0
-    counter = 0
+
     for i in range(len(file_text)):
         if "}" in file_text[i]:
             counter += 1
 
         elif "{" in file_text[i]:
             counter -= 1
+            
     if counter != 0:
         raise SyntaxError('Bro! number of "{" and "}" must be equal:')
 
