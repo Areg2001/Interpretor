@@ -4,9 +4,15 @@ variable_namespace = {}
 j = 0
 counter = 0
 index = 0
+file_text = []
 
 with open(sys.argv[1], "r") as f:
+    list_of_lines = [row.strip() for row in f.readlines()]
     file_text = [row.strip() for row in f.readlines()]
+
+    for row in list_of_lines:
+        if row != "":
+            file_text.append(row)
 
     for i in range(len(file_text)):
         if "}" in file_text[i]:
@@ -18,9 +24,9 @@ with open(sys.argv[1], "r") as f:
     if counter != 0:
         raise SyntaxError('Bro! number of "{" and "}" must be equal:')
 
-    def untill_if(idx):
+    def untill_if(ind):
         """This function do file line by line untill will reach a line that starts with 'if'"""
-        j = idx
+        j = ind
         while j != len(file_text):
             if "if" in file_text[j]:
                 break
@@ -34,7 +40,9 @@ with open(sys.argv[1], "r") as f:
                 variable_namespace[splitted_row[1]] = splitted_row[-1]
 
             if splitted_row[0] in variable_namespace and splitted_row[1] == "=":
-                variable_namespace[splitted_row[0]] = splitted_row[2]    
+                if splitted_row[2] in variable_namespace:
+                    splitted_row[2] = variable_namespace[splitted_row[2]]
+                variable_namespace[splitted_row[0]] = (splitted_row[2])    
     
             if "print" in file_text[j] and j <= len(file_text):
                 splitted_row = ' '.join(list(file_text[j]))
@@ -48,7 +56,6 @@ with open(sys.argv[1], "r") as f:
                 print(eval(' '.join(splitted_row)))
             j += 1
             
-    untill_if(j)
 
     def have_if():
         """This function do file line by line when reach a line that starts 'if'
@@ -80,7 +87,10 @@ with open(sys.argv[1], "r") as f:
                         splitted_row = file_text[ind].split()
 
                         if splitted_row[0] in variable_namespace and splitted_row[1] == "=":
-                            variable_namespace[splitted_row[0]] = splitted_row[2] 
+                            for i in range(2, len(splitted_row)):
+                                if splitted_row[i] in variable_namespace:
+                                    splitted_row[i] = variable_namespace[splitted_row[i]]
+                            variable_namespace[splitted_row[0]] = eval(" ".join(splitted_row[2:])) 
 
                         if "print" in file_text[ind]:
                             splitted_row = ' '.join(list(file_text[ind]))
@@ -100,9 +110,10 @@ with open(sys.argv[1], "r") as f:
                 else:
                     while "}" not in file_text[ind]:
                         ind += 1
+                    untill_if(ind)
+            ind += 1
 
-                    untill_if(ind) 
-            ind += 1                    
+    untill_if(j)                        
     have_if()
 
     if len(variable_namespace) != 0:
