@@ -1,9 +1,8 @@
 import sys
 
 variable_namespace = {}
-j = 0
 counter = 0
-index = 0
+j = 0
 file_text = []
 
 with open(sys.argv[1], "r") as f:
