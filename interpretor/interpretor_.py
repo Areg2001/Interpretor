@@ -35,12 +35,16 @@ with open(sys.argv[1], "r") as f:
                 if not splitted_row[1][0].isalpha(): 
                     raise SyntaxError("Bro! variables must start with ascii letter:")
                 
-                variable_namespace[splitted_row[1]] = splitted_row[3]
-
+                for i in range(3, len(splitted_row)):
+                    if splitted_row[i] in variable_namespace:
+                        splitted_row[i] = str(variable_namespace[splitted_row[i]])
+                variable_namespace[splitted_row[1]] = eval(" ".join(splitted_row[3:]))
+                
             if splitted_row[0] in variable_namespace and splitted_row[1] == "=":
-                if splitted_row[2] in variable_namespace:
-                    splitted_row[2] = variable_namespace[splitted_row[2]]
-                variable_namespace[splitted_row[0]] = splitted_row[2]       
+                for i in range(2, len(splitted_row)):
+                    if splitted_row[i] in variable_namespace:
+                        splitted_row[i] = str(variable_namespace[splitted_row[i]])
+                variable_namespace[splitted_row[0]] = eval(" ".join(splitted_row[2:]))          
     
             if "print" in file_text[j] and j <= len(file_text):
                 splitted_row = ' '.join(list(file_text[j]))
@@ -51,7 +55,7 @@ with open(sys.argv[1], "r") as f:
 
                 for i in range(len(splitted_row)):        
                     if splitted_row[i] in variable_namespace:
-                        splitted_row[i] = variable_namespace[splitted_row[i]]     
+                        splitted_row[i] = str(variable_namespace[splitted_row[i]])     
                 print(eval(' '.join(splitted_row)))
             j += 1
             
@@ -100,7 +104,7 @@ with open(sys.argv[1], "r") as f:
                                 raise SyntaxError("Bro! after print you must start with '[' and finish with']'")
 
                             splitted_row = (file_text[ind].split("print["))[1].split("]")[0].split(" ")
-                            
+
                             for i in range(len(splitted_row)):       
                                 if splitted_row[i] in variable_namespace:
                                     splitted_row[i] = variable_namespace[splitted_row[i]]     
