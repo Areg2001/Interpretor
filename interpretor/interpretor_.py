@@ -1,7 +1,10 @@
 import sys
+
 variable_namespace = {}
 j = 0
 counter = 0
+index = 0
+
 with open(sys.argv[1], "r") as f:
     file_text = [row.strip() for row in f.readlines()]
 
@@ -22,23 +25,37 @@ with open(sys.argv[1], "r") as f:
             if "if" in file_text[j]:
                 break
 
+            splitted_row = file_text[j].split()
+
             if "var" in file_text[j]:
-                splitted_row = file_text[j].split()
+                if not splitted_row[1][0].isalpha(): 
+                    raise SyntaxError("Bro! variables must start with ascii letter:")
+
                 variable_namespace[splitted_row[1]] = splitted_row[-1]
+
+            if splitted_row[0] in variable_namespace and splitted_row[1] == "=":
+                variable_namespace[splitted_row[0]] = splitted_row[2]    
     
             if "print" in file_text[j] and j <= len(file_text):
-                splitted_row = (file_text[j].split("print("))[1].split(")")[0].split(" ")
+                splitted_row = ' '.join(list(file_text[j]))
+                if splitted_row[5] != "[" and splitted_row[-1] != "]":
+                    raise SyntaxError("Bro! after print you must start with '[' and finish with']'")
+
+                splitted_row = (file_text[j].split("print["))[1].split("]")[0].split(" ")
                 for i in range(len(splitted_row)):        
                     if splitted_row[i] in variable_namespace:
                         splitted_row[i] = variable_namespace[splitted_row[i]]     
                 print(eval(' '.join(splitted_row)))
             j += 1
-    untill_if(j)         
-    index = 0
+            
+    untill_if(j)
+
     def have_if():
         """This function do file line by line when reach a line that starts 'if'
          and will do untill will reach line that ends with '}':}'"""
+
         ind = 0
+
         while ind != len(file_text):
             if "if" in file_text[ind]:
                 splitted_row = file_text[ind].split()
@@ -56,10 +73,21 @@ with open(sys.argv[1], "r") as f:
                     while file_text[ind] != "}":
                         if "var" in file_text[ind]:
                             splitted_row = file_text[ind].split()
+                            if not splitted_row[1][0].isalpha():
+                                raise SyntaxError("Bro! variables must start with ascii letter:")
                             variable_namespace[splitted_row[1]] = splitted_row[3]
 
+                        splitted_row = file_text[ind].split()
+
+                        if splitted_row[0] in variable_namespace and splitted_row[1] == "=":
+                            variable_namespace[splitted_row[0]] = splitted_row[2] 
+
                         if "print" in file_text[ind]:
-                            splitted_row = (file_text[ind].split("print("))[1].split(")")[0].split(" ")
+                            splitted_row = ' '.join(list(file_text[ind]))
+                            if splitted_row[5] != "[" and splitted_row[-1] != "]":
+                                raise SyntaxError("Bro! after print you must start with '[' and finish with']'")
+
+                            splitted_row = (file_text[ind].split("print["))[1].split("]")[0].split(" ")
                             for i in range(len(splitted_row)):       
                                 if splitted_row[i] in variable_namespace:
                                     splitted_row[i] = variable_namespace[splitted_row[i]]     
