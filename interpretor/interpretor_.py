@@ -48,13 +48,13 @@ with open(sys.argv[1], "r") as f:
                     raise SyntaxError("Bro! after print you must start with '[' and finish with']'")
 
                 splitted_row = (file_text[j].split("print["))[1].split("]")[0].split(" ")
+
                 for i in range(len(splitted_row)):        
                     if splitted_row[i] in variable_namespace:
                         splitted_row[i] = variable_namespace[splitted_row[i]]     
                 print(eval(' '.join(splitted_row)))
             j += 1
             
-
     def have_if():
         """This function do file line by line when reach a line that starts 'if'
          and will do untill will reach line that ends with '}':}'"""
@@ -80,6 +80,7 @@ with open(sys.argv[1], "r") as f:
                             splitted_row = file_text[ind].split()
                             if not splitted_row[1][0].isalpha():
                                 raise SyntaxError("Bro! variables must start with ascii letter:")
+
                             for i in range(3, len(splitted_row)):
                                 if splitted_row[i] in variable_namespace:
                                     splitted_row[i] = str(variable_namespace[splitted_row[i]])
@@ -99,6 +100,7 @@ with open(sys.argv[1], "r") as f:
                                 raise SyntaxError("Bro! after print you must start with '[' and finish with']'")
 
                             splitted_row = (file_text[ind].split("print["))[1].split("]")[0].split(" ")
+                            
                             for i in range(len(splitted_row)):       
                                 if splitted_row[i] in variable_namespace:
                                     splitted_row[i] = variable_namespace[splitted_row[i]]     
