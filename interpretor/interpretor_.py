@@ -1,12 +1,11 @@
-import sys
-from tokenize import Name
+from sys import argv
 
 variable_namespace = {}
 counter = 0
 j = 0
 file_text = []
 
-with open(sys.argv[1], "r") as f:
+with open(argv[1], "r") as f:
     list_of_lines = [row.strip() for row in f.readlines()]
 
     for row in list_of_lines:
@@ -45,6 +44,14 @@ with open(sys.argv[1], "r") as f:
                 if arg[i] in variable_namespace:
                     arg[i] = str(variable_namespace[arg[i]])
             variable_namespace[arg[0]] = eval(" ".join(arg[2:]))
+
+    def alreadyDeclared(row, idx):
+        "This function is cheking, that declared variables were not been declared. "
+        
+        row = file_text[idx].split()
+        if row[1] in variable_namespace:
+            raise SyntaxError(f"Bro! {(row[1])} already declared.")
+
 
     def CreatingVariable(arg):
         """This function assign value in variable."""
@@ -97,6 +104,7 @@ with open(sys.argv[1], "r") as f:
 
             if "var" in file_text[j]:
                 variableName(splitted_row)
+                alreadyDeclared(splitted_row, j)
                 CreatingVariable(splitted_row)
 
             VariableAfterDeclaring(splitted_row)
@@ -122,6 +130,7 @@ with open(sys.argv[1], "r") as f:
                         if "var" in file_text[ind]:
                             splitted_row = file_text[ind].split()
                             variableName(splitted_row)
+                            alreadyDeclared(splitted_row, ind)
                             CreatingVariable(splitted_row)
                         VariableAfterDeclaring(splitted_row)
                         isDeclared(splitted_row, ind)     
