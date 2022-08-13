@@ -1,4 +1,5 @@
 import sys
+from tokenize import Name
 
 variable_namespace = {}
 counter = 0
@@ -25,8 +26,6 @@ with open(sys.argv[1], "r") as f:
         if counter != 0:
             raise SyntaxError('Bro! number of "{" and "}" must be equal:')
 
-
-
     def printing(txt, row, idx):
         if "print" in txt[idx] and j <= len(txt):
             row = ' '.join(list(txt[idx]))
@@ -47,15 +46,49 @@ with open(sys.argv[1], "r") as f:
                     arg[i] = str(variable_namespace[arg[i]])
             variable_namespace[arg[0]] = eval(" ".join(arg[2:]))
 
-    def CreatingVariable(arg):    
+    def CreatingVariable(arg):
+        """This function assign value in variable."""
+
         for i in range(3, len(arg)):
             if arg[i] in variable_namespace:
                 arg[i] = str(variable_namespace[arg[i]])
-        variable_namespace[arg[1]] = eval(" ".join(arg[3:]))    
+        variable_namespace[arg[1]] = eval(" ".join(arg[3:]))
+
+
+    def variableName(row):
+        """This function is cheking or does it starts with ascii letter?"""
+
+        if not row[1][0].isalpha():
+            raise SyntaxError("Bro! variables must start with ascii letter.")
+
+    def variableValue(row):
+        for i in range(len(row)):
+            if row[i] in variable_namespace:
+                row[i] = str(variable_namespace[row[i]])
+
+    def isDeclared(row, idx):
+        row = file_text[idx].split()
+        for i in range(5):
+            if row[0] in variable_namespace or ["if", "print", "var", "}", "{"][i] in row[0]:
+                return True
+
+        raise NameError(f"Bro! Name ({str(row[0])})' is unrecognizable.")    
+                           
+
+    def afterIf(idx):
+        """This function is checking, or does it starts with '{' and ends with '}'?"""
+
+        if(file_text[idx + 1].split())[0] != "{":
+            raise SyntaxError("Bro! after if you must start with {") 
+
+        if "}" not in file_text[idx:]:
+            raise SyntaxError("Bro! after if you mast end with }")                
 
     def untill_if(ind):
         """This function do file line by line untill will reach a line that starts with 'if'"""
+
         j = ind
+
         while j != len(file_text):
             if "if" in file_text[j]:
                 break
@@ -63,13 +96,11 @@ with open(sys.argv[1], "r") as f:
             splitted_row = file_text[j].split()
 
             if "var" in file_text[j]:
-                if not splitted_row[1][0].isalpha(): 
-                    raise SyntaxError("Bro! variables must start with ascii letter:")
+                variableName(splitted_row)
+                CreatingVariable(splitted_row)
 
-                CreatingVariable(splitted_row)    
-                
-            VariableAfterDeclaring(splitted_row)        
-    
+            VariableAfterDeclaring(splitted_row)
+            isDeclared(splitted_row, j)        
             printing(file_text, splitted_row, j)
 
             j += 1
@@ -83,30 +114,19 @@ with open(sys.argv[1], "r") as f:
         while ind != len(file_text):
             if "if" in file_text[ind]:
                 splitted_row = file_text[ind].split()
-                if (file_text[ind + 1].split())[0] != "{":
-                    raise SyntaxError("Bro! after if you must start with {")
-
-                if "}" not in file_text[ind:]:
-                    raise SyntaxError("Bro! after if you mast end with }") 
-
-                for i in range(len(splitted_row)):
-                    if splitted_row[i] in variable_namespace:
-                        splitted_row[i] = str(variable_namespace[splitted_row[i]])          
+                afterIf(ind)
+                variableValue(splitted_row)         
                             
                 if eval(' '.join(splitted_row[1:])):
                     while file_text[ind] != "}":
                         if "var" in file_text[ind]:
                             splitted_row = file_text[ind].split()
-                            if not splitted_row[1][0].isalpha():
-                                raise SyntaxError("Bro! variables must start with ascii letter:")
-
-                            CreatingVariable(splitted_row)    
-                        
-                        splitted_row = file_text[ind].split()
-
-                        VariableAfterDeclaring(splitted_row)        
-     
+                            variableName(splitted_row)
+                            CreatingVariable(splitted_row)
+                        VariableAfterDeclaring(splitted_row)
+                        isDeclared(splitted_row, ind)     
                         printing(file_text, splitted_row, ind)
+                    
 
                         ind += 1
 
@@ -118,11 +138,9 @@ with open(sys.argv[1], "r") as f:
                         ind += 1
                     untill_if(ind)
             ind += 1
-
     Counter(file_text, counter)
     untill_if(j)                        
     have_if()
 
     if len(variable_namespace) != 0:
-        print(variable_namespace)                                             
-
+        print(variable_namespace)                                          

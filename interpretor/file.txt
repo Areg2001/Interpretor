@@ -1,24 +1,13 @@
-var str1 = 23
-var g = 9
-var a = 7
-g = 9 * 3
-a = 8
-var t = a
-print[str1 + (5 * 6)]
-var str2 = 2
-var y = str2
-y = str2
-if str1 == 23
-{
-   
-    str2 = 23
-    var x = str1 * str2
-    var p = x
-    x = p
-}
+var x = 8
+var y = 9
+x = 9
 
-if str1 == 23
+var y = 0
+if x == 9
 {
-    print[4]
+    print[3]
 }
-print[2]
+print[x]
+var car = y
+print[car]
+g = 0
