@@ -12,15 +12,46 @@ with open(sys.argv[1], "r") as f:
         if row != "":
             file_text.append(row)
 
-    for i in range(len(file_text)):
-        if "}" in file_text[i]:
-            counter += 1
+    def Counter(txt, counter):
+        """This Function is cheking count of '{' and '}'. They must be equal:"""   
 
-        elif "{" in file_text[i]:
-            counter -= 1
+        for line in txt:
+            if "}" in line:
+                counter += 1
 
-    if counter != 0:
-        raise SyntaxError('Bro! number of "{" and "}" must be equal:')
+            elif "{" in line:
+                counter -= 1
+
+        if counter != 0:
+            raise SyntaxError('Bro! number of "{" and "}" must be equal:')
+
+
+
+    def printing(txt, row, idx):
+        if "print" in txt[idx] and j <= len(txt):
+            row = ' '.join(list(txt[idx]))
+            if row[5] != "[" and row[-1] != "]":
+                raise SyntaxError("Bro! after print you must start with '[' and finish with']'")
+
+            row = (file_text[idx].split("print["))[1].split("]")[0].split(" ")
+
+            for i in range(len(row)):        
+                if row[i] in variable_namespace:
+                    row[i] = str(variable_namespace[row[i]])     
+            print(eval(' '.join(row)))    
+
+    def VariableAfterDeclaring(arg):
+        if arg[0] in variable_namespace and arg[1] == "=":
+            for i in range(2, len(arg)):
+                if arg[i] in variable_namespace:
+                    arg[i] = str(variable_namespace[arg[i]])
+            variable_namespace[arg[0]] = eval(" ".join(arg[2:]))
+
+    def CreatingVariable(arg):    
+        for i in range(3, len(arg)):
+            if arg[i] in variable_namespace:
+                arg[i] = str(variable_namespace[arg[i]])
+        variable_namespace[arg[1]] = eval(" ".join(arg[3:]))    
 
     def untill_if(ind):
         """This function do file line by line untill will reach a line that starts with 'if'"""
@@ -34,29 +65,13 @@ with open(sys.argv[1], "r") as f:
             if "var" in file_text[j]:
                 if not splitted_row[1][0].isalpha(): 
                     raise SyntaxError("Bro! variables must start with ascii letter:")
+
+                CreatingVariable(splitted_row)    
                 
-                for i in range(3, len(splitted_row)):
-                    if splitted_row[i] in variable_namespace:
-                        splitted_row[i] = str(variable_namespace[splitted_row[i]])
-                variable_namespace[splitted_row[1]] = eval(" ".join(splitted_row[3:]))
-                
-            if splitted_row[0] in variable_namespace and splitted_row[1] == "=":
-                for i in range(2, len(splitted_row)):
-                    if splitted_row[i] in variable_namespace:
-                        splitted_row[i] = str(variable_namespace[splitted_row[i]])
-                variable_namespace[splitted_row[0]] = eval(" ".join(splitted_row[2:]))          
+            VariableAfterDeclaring(splitted_row)        
     
-            if "print" in file_text[j] and j <= len(file_text):
-                splitted_row = ' '.join(list(file_text[j]))
-                if splitted_row[5] != "[" and splitted_row[-1] != "]":
-                    raise SyntaxError("Bro! after print you must start with '[' and finish with']'")
+            printing(file_text, splitted_row, j)
 
-                splitted_row = (file_text[j].split("print["))[1].split("]")[0].split(" ")
-
-                for i in range(len(splitted_row)):        
-                    if splitted_row[i] in variable_namespace:
-                        splitted_row[i] = str(variable_namespace[splitted_row[i]])     
-                print(eval(' '.join(splitted_row)))
             j += 1
             
     def have_if():
@@ -85,30 +100,14 @@ with open(sys.argv[1], "r") as f:
                             if not splitted_row[1][0].isalpha():
                                 raise SyntaxError("Bro! variables must start with ascii letter:")
 
-                            for i in range(3, len(splitted_row)):
-                                if splitted_row[i] in variable_namespace:
-                                    splitted_row[i] = str(variable_namespace[splitted_row[i]])
-                            variable_namespace[splitted_row[1]] = eval(" ".join(splitted_row[3:]))    
-
+                            CreatingVariable(splitted_row)    
+                        
                         splitted_row = file_text[ind].split()
 
-                        if splitted_row[0] in variable_namespace and splitted_row[1] == "=":
-                            for i in range(2, len(splitted_row)):
-                                if splitted_row[i] in variable_namespace:
-                                    splitted_row[i] = str(variable_namespace[splitted_row[i]])
-                            variable_namespace[splitted_row[0]] = eval(" ".join(splitted_row[2:])) 
+                        VariableAfterDeclaring(splitted_row)        
+     
+                        printing(file_text, splitted_row, ind)
 
-                        if "print" in file_text[ind]:
-                            splitted_row = ' '.join(list(file_text[ind]))
-                            if splitted_row[5] != "[" and splitted_row[-1] != "]":
-                                raise SyntaxError("Bro! after print you must start with '[' and finish with']'")
-
-                            splitted_row = (file_text[ind].split("print["))[1].split("]")[0].split(" ")
-
-                            for i in range(len(splitted_row)):       
-                                if splitted_row[i] in variable_namespace:
-                                    splitted_row[i] = variable_namespace[splitted_row[i]]     
-                            print(eval(''.join(splitted_row)))     
                         ind += 1
 
                     if ind != len(file_text):
@@ -120,8 +119,10 @@ with open(sys.argv[1], "r") as f:
                     untill_if(ind)
             ind += 1
 
+    Counter(file_text, counter)
     untill_if(j)                        
     have_if()
 
     if len(variable_namespace) != 0:
         print(variable_namespace)                                             
+
