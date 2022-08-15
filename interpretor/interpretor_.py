@@ -83,7 +83,6 @@ with open(argv[1], "r") as f:
 
         raise NameError(f"Bro! Name ({str(row[0])})' is unrecognizable.")    
                            
-
     def afterIf(idx):
         """This function is checking, or does it starts with '{' and ends with '}'?"""
 
@@ -134,12 +133,11 @@ with open(argv[1], "r") as f:
                             variableName(splitted_row) 
                             alreadyDeclared(splitted_row, ind)
                             CreatingVariable(splitted_row)  
-                              
+
                         VariableAfterDeclaring(splitted_row, ind)
                         isDeclared(splitted_row, ind)     
                         printing(file_text, splitted_row, ind)
                     
-
                         ind += 1
 
                     if ind != len(file_text):
