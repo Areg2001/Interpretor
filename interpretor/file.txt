@@ -1,12 +1,23 @@
-var x = 8
-var car = x
-var y = 9
-x = 9
-if x == 9
-{   
+var car = 4
+var y = 23
+y = 67
+print[y / 67]
 
-    y = 0
-    print[3]
+if y > 23
+{
+    var x = 2
+    y = 2
+    print[2]
 }
-print[x]
-print[car]
+if car < 3
+{
+    print[123]
+}
+
+print[y + x]
+if x + y == 69
+
+{
+    print[car]
+}
+

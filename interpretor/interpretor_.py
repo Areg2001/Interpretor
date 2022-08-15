@@ -35,10 +35,12 @@ with open(argv[1], "r") as f:
 
             for i in range(len(row)):        
                 if row[i] in variable_namespace:
-                    row[i] = str(variable_namespace[row[i]])     
+                    row[i] = str(variable_namespace[row[i]])
+
             print(eval(' '.join(row)))    
 
-    def VariableAfterDeclaring(arg):
+    def VariableAfterDeclaring(arg, idx):
+        arg = file_text[idx].split()
         if arg[0] in variable_namespace and arg[1] == "=":
             for i in range(2, len(arg)):
                 if arg[i] in variable_namespace:
@@ -107,7 +109,7 @@ with open(argv[1], "r") as f:
                 alreadyDeclared(splitted_row, j)
                 CreatingVariable(splitted_row)
 
-            VariableAfterDeclaring(splitted_row)
+            VariableAfterDeclaring(splitted_row, j)
             isDeclared(splitted_row, j)        
             printing(file_text, splitted_row, j)
 
@@ -129,10 +131,11 @@ with open(argv[1], "r") as f:
                     while file_text[ind] != "}":
                         if "var" in file_text[ind]:
                             splitted_row = file_text[ind].split()
-                            variableName(splitted_row)
+                            variableName(splitted_row) 
                             alreadyDeclared(splitted_row, ind)
-                            CreatingVariable(splitted_row)
-                        VariableAfterDeclaring(splitted_row)
+                            CreatingVariable(splitted_row)  
+                              
+                        VariableAfterDeclaring(splitted_row, ind)
                         isDeclared(splitted_row, ind)     
                         printing(file_text, splitted_row, ind)
                     
@@ -147,6 +150,7 @@ with open(argv[1], "r") as f:
                         ind += 1
                     untill_if(ind)
             ind += 1
+
     Counter(file_text, counter)
     untill_if(j)                        
     have_if()
