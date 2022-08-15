@@ -1,23 +1,17 @@
-var car = 4
-var y = 23
-y = 67
-print[y / 67]
-
-if y > 23
+var x = 4
+print[x]
+if x < 6
 {
-    var x = 2
-    y = 2
-    print[2]
+    var g = "as"
+    print[g]
 }
-if car < 3
+if x > 6
 {
-    print[123]
+    var t = 0
 }
-
-print[y + x]
-if x + y == 69
-
+print[x * 2]
+if x == 4
 {
-    print[car]
+    print[x + 5]
 }
-
+var fg = 23

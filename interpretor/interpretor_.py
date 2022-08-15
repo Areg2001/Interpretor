@@ -36,8 +36,10 @@ with open(argv[1], "r") as f:
             for i in range(len(row)):        
                 if row[i] in variable_namespace:
                     row[i] = str(variable_namespace[row[i]])
-
-            print(eval(' '.join(row)))    
+            try:
+                print(eval(' '.join(row))) 
+            except:
+                print(" ".join(row))       
 
     def VariableAfterDeclaring(arg, idx):
         arg = file_text[idx].split()
